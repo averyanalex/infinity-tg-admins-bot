@@ -1,1 +1,1 @@
-# Rust template with nix shell and package
+# Infinity Telegram admins bot

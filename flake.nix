@@ -27,12 +27,12 @@
         rustDev = pkgs.rust-bin.stable.latest.default;
         rustBuild = pkgs.rust-bin.stable.latest.minimal;
 
-		devInputs = [rustDev] ++ (with pkgs; [alejandra]);
+        devInputs = [rustDev] ++ (with pkgs; [alejandra]);
         buildInputs = with pkgs; [openssl];
         nativeBuildInputs = with pkgs; [pkg-config];
 
         package = pkgs.stdenv.mkDerivation {
-          name = "template";
+          name = "infinitytgadminsbot";
           src = self;
 
           buildInputs = buildInputs;
@@ -53,7 +53,7 @@
           '';
 
           installPhase = ''
-            install -Dm775 ./target/release/template $out/bin/template
+            install -Dm775 ./target/release/infinitytgadminsbot $out/bin/infinitytgadminsbot
           '';
         };
       in {

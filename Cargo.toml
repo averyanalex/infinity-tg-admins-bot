@@ -1,11 +1,17 @@
 [package]
-name = "template"
+name = "infinitytgadminsbot"
 version = "0.1.0"
 edition = "2021"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
+anyhow = "1.0.71"
+envconfig = "0.10.0"
+serde = "1.0.165"
+serde_derive = "1.0.165"
+teloxide = { version = "0.12.2", features = ["macros", "throttle"] }
+tokio = { version = "1.29.1", features = ["full"] }
 
 [profile.release]
 lto = "thin"
