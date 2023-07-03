@@ -3,6 +3,7 @@ use std::sync::Arc;
 use anyhow::{Context, Result};
 use envconfig::Envconfig;
 use teloxide::prelude::*;
+use tracing::*;
 
 type Bot = teloxide::adaptors::Throttle<teloxide::Bot>;
 
@@ -44,6 +45,8 @@ struct Config {
 
 #[tokio::main]
 async fn main() -> Result<()> {
+    tracing_subscriber::fmt::init();
+
     let config = Config::init_from_env()?;
 
     let bot = teloxide::Bot::from_env().throttle(teloxide::adaptors::throttle::Limits::default());
@@ -67,6 +70,7 @@ async fn main() -> Result<()> {
     Ok(())
 }
 
+#[tracing::instrument(skip(bot, config))]
 async fn handle_command(bot: Bot, msg: Message, cmd: Command, config: Arc<Config>) -> Result<()> {
     let text = match cmd {
         Command::Source => &config.source_msg,
@@ -77,6 +81,7 @@ async fn handle_command(bot: Bot, msg: Message, cmd: Command, config: Arc<Config
     Ok(())
 }
 
+#[tracing::instrument(skip(bot, config))]
 async fn handle_message(bot: Bot, msg: Message, config: Arc<Config>) -> Result<()> {
     let subscribed = if config.check_subscription {
         let member = bot
@@ -93,8 +98,10 @@ async fn handle_message(bot: Bot, msg: Message, config: Arc<Config>) -> Result<(
         )
         .await?;
         bot.send_message(msg.chat.id, &config.sent_msg).await?;
+        info!("message sent to the channel")
     } else {
         bot.send_message(msg.chat.id, &config.subscribe_msg).await?;
+        info!("user not subscribed")
     }
     Ok(())
 }
