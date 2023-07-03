@@ -2,7 +2,7 @@ use std::sync::Arc;
 
 use anyhow::{Context, Result};
 use envconfig::Envconfig;
-use teloxide::prelude::*;
+use teloxide::{prelude::*, utils::command::BotCommands};
 use tracing::*;
 
 type Bot = teloxide::adaptors::Throttle<teloxide::Bot>;
@@ -73,9 +73,9 @@ async fn main() -> Result<()> {
 #[tracing::instrument(skip(bot, config))]
 async fn handle_command(bot: Bot, msg: Message, cmd: Command, config: Arc<Config>) -> Result<()> {
     let text = match cmd {
-        Command::Source => &config.source_msg,
-        Command::Start => &config.help_msg,
-        Command::Help => &config.help_msg,
+        Command::Source => config.source_msg.clone(),
+        Command::Start => config.help_msg.clone(),
+        Command::Help => Command::descriptions().to_string(),
     };
     bot.send_message(msg.chat.id, text).await?;
     Ok(())
